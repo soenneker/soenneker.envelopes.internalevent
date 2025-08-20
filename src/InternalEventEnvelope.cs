@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
+using Soenneker.Dtos.IdNamePairs.Partial;
 
 namespace Soenneker.Envelopes.InternalEvent;
 
@@ -41,18 +42,11 @@ public sealed class InternalEventEnvelope
     public DateTime CreatedAt { get; set; }
 
     /// <summary>
-    /// An identifier indicating which service or component emitted the event.
+    /// The service or component that emitted the event, it's name and id (both/either may be null)
     /// </summary>
     [JsonPropertyName("source")]
     [JsonProperty("source")]
-    public string Source { get; set; } = null!;
-
-    /// <summary>
-    /// The Source's id associated with the event, if applicable. May be null.
-    /// </summary>
-    [JsonPropertyName("sourceId")]
-    [JsonProperty("sourceId")]
-    public string? SourceId { get; set; }
+    public PartialIdNamePair? Source { get; set; }
 
     /// <summary>
     /// The user ID associated with the event, if applicable. May be null.
