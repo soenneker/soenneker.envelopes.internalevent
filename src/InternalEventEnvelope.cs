@@ -48,6 +48,13 @@ public sealed class InternalEventEnvelope
     public string Source { get; set; } = null!;
 
     /// <summary>
+    /// The Source's id associated with the event, if applicable. May be null.
+    /// </summary>
+    [JsonPropertyName("sourceId")]
+    [JsonProperty("sourceId")]
+    public string? SourceId { get; set; }
+
+    /// <summary>
     /// The user ID associated with the event, if applicable. May be null.
     /// </summary>
     [JsonPropertyName("userId")]
