@@ -35,11 +35,11 @@ public sealed class InternalEventEnvelope
     public string Payload { get; set; } = null!;
 
     /// <summary>
-    /// The UTC timestamp indicating when the event was originally created or emitted.
+    /// The instance in time indicating when the event was originally created or emitted.
     /// </summary>
     [JsonPropertyName("createdAt")]
     [JsonProperty("createdAt")]
-    public DateTime CreatedAt { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
 
     /// <summary>
     /// The service or component that emitted the event, it's name and id (both/either may be null)
