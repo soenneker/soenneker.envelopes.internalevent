@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Soenneker.Envelopes.InternalEvent.csproj" />
+        <ProjectReference Include="..\..\src\Soenneker.Envelopes.InternalEvent\Soenneker.Envelopes.InternalEvent.csproj" />
     </ItemGroup>
 
     <ItemGroup>
