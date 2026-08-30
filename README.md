@@ -5,7 +5,7 @@
 
 # Soenneker.Envelopes.InternalEvent
 
-A lightweight data transfer object used for transporting internal events between services. Designed to be decoupled from specific domain models to support generic event handling.
+A serializer-neutral envelope for carrying an internal event identifier, type, JSON payload, creation time, and optional source/user metadata.
 
 ## Install
 
@@ -13,17 +13,52 @@ A lightweight data transfer object used for transporting internal events between
 dotnet add package Soenneker.Envelopes.InternalEvent
 ```
 
-## What you get
+## Create an envelope
 
-- `InternalEventEnvelope` — A lightweight data transfer object used for transporting internal events between services. Designed to be decoupled from specific domain models to support generic event handling.
+`Payload` is a JSON string, not an embedded JSON object. Serialize the event body before assigning it:
 
-## API at a glance
+```csharp
+using System.Text.Json;
+using Soenneker.Envelopes.InternalEvent;
 
-| API | What it does | Result / important behavior |
-| --- | --- | --- |
-| `InternalEventEnvelope.Id` | A unique identifier for the event instance (typically a GUID). | A unique identifier for the event instance (typically a GUID). |
-| `InternalEventEnvelope.EventType` | The type of event being transmitted. Consumers use this to deserialize the `Payload` appropriately. | The type of event being transmitted. Consumers use this to deserialize the `Payload` appropriately. |
-| `InternalEventEnvelope.Payload` | A serialized JSON payload representing the event data. Must be deserialized based on the `EventType`. | A serialized JSON payload representing the event data. Must be deserialized based on the `EventType`. |
-| `InternalEventEnvelope.CreatedAt` | The instance in time indicating when the event was originally created or emitted. | The instance in time indicating when the event was originally created or emitted. |
-| `InternalEventEnvelope.Source` | The service or component that emitted the event, it's name and id (both/either may be null). | The service or component that emitted the event, it's name and id (both/either may be null). |
-| `InternalEventEnvelope.UserId` | The user ID associated with the event, if applicable. May be null. | The user ID associated with the event, if applicable. May be null. |
+var body = new UserCreated("user-123", "user@example.com");
+
+var envelope = new InternalEventEnvelope
+{
+    Id = Guid.NewGuid().ToString("D"),
+    EventType = "user.created.v1",
+    Payload = JsonSerializer.Serialize(body),
+    CreatedAt = DateTimeOffset.UtcNow,
+    UserId = body.Id
+};
+
+string message = JsonSerializer.Serialize(envelope);
+
+public sealed record UserCreated(string Id, string Email);
+```
+
+The envelope uses the same camel-case property names with both `System.Text.Json` and Newtonsoft.Json: `id`, `eventType`, `payload`, `createdAt`, `source`, and `userId`. Because `payload` is a string, serializing the envelope escapes the inner JSON. Consumers deserialize the envelope first and then deserialize `Payload` into the type selected by `EventType`.
+
+## Consume safely
+
+Treat `EventType` as an untrusted discriminator and map it through an explicit allowlist:
+
+```csharp
+InternalEventEnvelope envelope =
+    JsonSerializer.Deserialize<InternalEventEnvelope>(message)!;
+
+switch (envelope.EventType)
+{
+    case "user.created.v1":
+        UserCreated created = JsonSerializer.Deserialize<UserCreated>(envelope.Payload)!;
+        await Handle(created);
+        break;
+
+    default:
+        throw new NotSupportedException($"Unsupported event type: {envelope.EventType}");
+}
+```
+
+Do not resolve arbitrary CLR types from `EventType` or enable unsafe polymorphic deserialization for received data. Apply payload size limits before deserialization and validate the resulting event model.
+
+`Id`, `EventType`, `Payload`, and `CreatedAt` are required when constructing the envelope. The class does not generate IDs, enforce uniqueness, validate JSON, authenticate a source, sign content, deduplicate deliveries, or provide ordering/retry behavior. Use `Id` as an idempotency key only when the producer guarantees its uniqueness, and interpret `CreatedAt` as producer-supplied metadata rather than a trusted receipt time.

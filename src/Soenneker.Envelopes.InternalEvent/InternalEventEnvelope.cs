@@ -16,7 +16,7 @@ public sealed class InternalEventEnvelope
     /// </summary>
     [JsonPropertyName("id")]
     [JsonProperty("id")]
-    public string Id { get; set; } = null!;
+    public required string Id { get; set; }
 
     /// <summary>
     /// The type of event being transmitted.
@@ -24,7 +24,7 @@ public sealed class InternalEventEnvelope
     /// </summary>
     [JsonPropertyName("eventType")]
     [JsonProperty("eventType")]
-    public string EventType { get; set; } = null!;
+    public required string EventType { get; set; }
 
     /// <summary>
     /// A serialized JSON payload representing the event data.
@@ -32,17 +32,17 @@ public sealed class InternalEventEnvelope
     /// </summary>
     [JsonPropertyName("payload")]
     [JsonProperty("payload")]
-    public string Payload { get; set; } = null!;
+    public required string Payload { get; set; }
 
     /// <summary>
     /// The instance in time indicating when the event was originally created or emitted.
     /// </summary>
     [JsonPropertyName("createdAt")]
     [JsonProperty("createdAt")]
-    public DateTimeOffset CreatedAt { get; set; }
+    public required DateTimeOffset CreatedAt { get; set; }
 
     /// <summary>
-    /// The service or component that emitted the event, it's name and id (both/either may be null)
+    /// The service or component that emitted the event. Its name and ID may each be null.
     /// </summary>
     [JsonPropertyName("source")]
     [JsonProperty("source")]
