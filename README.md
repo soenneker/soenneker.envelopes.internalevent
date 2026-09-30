@@ -37,7 +37,7 @@ string message = JsonSerializer.Serialize(envelope);
 public sealed record UserCreated(string Id, string Email);
 ```
 
-The envelope uses the same camel-case property names with both `System.Text.Json` and Newtonsoft.Json: `id`, `eventType`, `payload`, `createdAt`, `source`, and `userId`. Because `payload` is a string, serializing the envelope escapes the inner JSON. Consumers deserialize the envelope first and then deserialize `Payload` into the type selected by `EventType`.
+The envelope uses the same camel-case property names with `System.Text.Json`: `id`, `eventType`, `payload`, `createdAt`, `source`, and `userId`. Because `payload` is a string, serializing the envelope escapes the inner JSON. Consumers deserialize the envelope first and then deserialize `Payload` into the type selected by `EventType`.
 
 ## Consume safely
 

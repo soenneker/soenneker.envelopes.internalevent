@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 using Soenneker.Dtos.IdNamePairs.Partial;
 
 namespace Soenneker.Envelopes.InternalEvent;
@@ -15,7 +14,6 @@ public sealed class InternalEventEnvelope
     /// A unique identifier for the event instance (typically a GUID).
     /// </summary>
     [JsonPropertyName("id")]
-    [JsonProperty("id")]
     public required string Id { get; set; }
 
     /// <summary>
@@ -23,7 +21,6 @@ public sealed class InternalEventEnvelope
     /// Consumers use this to deserialize the <see cref="Payload"/> appropriately.
     /// </summary>
     [JsonPropertyName("eventType")]
-    [JsonProperty("eventType")]
     public required string EventType { get; set; }
 
     /// <summary>
@@ -31,27 +28,23 @@ public sealed class InternalEventEnvelope
     /// Must be deserialized based on the <see cref="EventType"/>.
     /// </summary>
     [JsonPropertyName("payload")]
-    [JsonProperty("payload")]
     public required string Payload { get; set; }
 
     /// <summary>
     /// The instance in time indicating when the event was originally created or emitted.
     /// </summary>
     [JsonPropertyName("createdAt")]
-    [JsonProperty("createdAt")]
     public required DateTimeOffset CreatedAt { get; set; }
 
     /// <summary>
     /// The service or component that emitted the event. Its name and ID may each be null.
     /// </summary>
     [JsonPropertyName("source")]
-    [JsonProperty("source")]
     public PartialIdNamePair? Source { get; set; }
 
     /// <summary>
     /// The user ID associated with the event, if applicable. May be null.
     /// </summary>
     [JsonPropertyName("userId")]
-    [JsonProperty("userId")]
     public string? UserId { get; set; }
 }
