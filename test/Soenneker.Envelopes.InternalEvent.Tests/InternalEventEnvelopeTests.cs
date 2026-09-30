@@ -8,7 +8,7 @@ namespace Soenneker.Envelopes.InternalEvent.Tests;
 public sealed class InternalEventEnvelopeTests : UnitTest
 {
     [Test]
-    public async Task SystemTextJson_roundtrip_preserves_string_payload()
+    public async ValueTask SystemTextJson_roundtrip_preserves_string_payload()
     {
         const string payload = "{\"id\":\"user-123\"}";
         var envelope = new InternalEventEnvelope
