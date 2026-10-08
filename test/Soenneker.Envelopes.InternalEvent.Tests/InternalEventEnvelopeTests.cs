@@ -2,13 +2,14 @@ using Soenneker.Tests.Unit;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Soenneker.Envelopes.InternalEvent.Tests;
 
 public sealed class InternalEventEnvelopeTests : UnitTest
 {
     [Test]
-    public async ValueTask SystemTextJson_roundtrip_preserves_string_payload()
+    public async ValueTask SystemTextJson_roundtrip_preserves_string_payload(CancellationToken cancellationToken)
     {
         const string payload = "{\"id\":\"user-123\"}";
         var envelope = new InternalEventEnvelope
